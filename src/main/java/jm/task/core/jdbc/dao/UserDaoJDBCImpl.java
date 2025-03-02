@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
-    private static final String INSERT_NEW = "INSERT INTO users (name, last_name, age) VALUES (name, lastName, age)";
-    private static final String SELECT_ALL = "SELECT * FROM users";
-    private static final String DELETE_USER = "DELETE FROM users WHERE id = ?";
+    private static final String INSERT_NEW = "INSERT INTO user (name, last_name, age) VALUES (?, ?, ?)";
+    private static final String SELECT_ALL = "SELECT * FROM user";
+    private static final String DELETE_USER = "DELETE FROM user WHERE id = ?";
     private static final String DROP_USER = "DROP TABLE users";
 
     public UserDaoJDBCImpl() {
@@ -29,8 +29,11 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        try (Statement statement = Util.getConnection().createStatement()) {
-            statement.execute(INSERT_NEW);
+        try (PreparedStatement statement = Util.getConnection().prepareStatement(INSERT_NEW)) {
+            statement.setString(1, name);
+            statement.setString(2, lastName);
+            statement.setByte(3, age);
+            statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка при добавлении пользователя: " + e.getMessage(), e);
         }
