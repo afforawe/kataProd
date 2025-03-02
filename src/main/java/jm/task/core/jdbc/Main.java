@@ -1,20 +1,24 @@
 package jm.task.core.jdbc;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import jm.task.core.jdbc.dao.UserDaoJDBCImpl;
+import jm.task.core.jdbc.model.User;
 
+import java.util.List;
 
 public class Main {
-    private final static String URL = "jdbc:mysql://localhost:3306/mydbtest";
-    private final static String USERNAME = "root";
-    private final static String PASSWORD = "root";
-
     public static void main(String[] args) {
-        try (Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD)) {
+        UserDaoJDBCImpl userDao = new UserDaoJDBCImpl();
 
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        userDao.createUsersTable();
+
+        userDao.saveUser("Alex", "Bordun", (byte) 21);
+        userDao.saveUser("Tom", "Criz", (byte) 22);
+        userDao.saveUser("John", "Delly", (byte) 23);
+        userDao.saveUser("Steve", "Erys", (byte) 24);
+
+        userDao.getAllUsers();
+        userDao.cleanUsersTable();
+        userDao.dropUsersTable();
     }
+
 }
