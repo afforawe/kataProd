@@ -27,7 +27,6 @@ public class UserDaoJDBCImpl implements UserDao {
 
 
     public UserDaoJDBCImpl() {
-
     }
 
     public void createUsersTable() {
