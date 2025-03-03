@@ -14,7 +14,6 @@ public class Util {
     }
 
     public static Connection getConnection() {
-
         try {
             if (connection == null) {
                 connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);

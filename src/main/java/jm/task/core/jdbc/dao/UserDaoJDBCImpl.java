@@ -29,6 +29,7 @@ public class UserDaoJDBCImpl implements UserDao {
     public UserDaoJDBCImpl() {
     }
 
+    @Override
     public void createUsersTable() {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(CREATE_TABLE_USER);
@@ -38,6 +39,7 @@ public class UserDaoJDBCImpl implements UserDao {
         }
     }
 
+    @Override
     public void dropUsersTable() {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(DROP_TABLE_USER);
@@ -47,6 +49,7 @@ public class UserDaoJDBCImpl implements UserDao {
         }
     }
 
+    @Override
     public void saveUser(String name, String lastName, byte age) {
         try (PreparedStatement statement = connection
                 .prepareStatement(INSERT_NEW)) {
@@ -61,6 +64,7 @@ public class UserDaoJDBCImpl implements UserDao {
         }
     }
 
+    @Override
     public void removeUserById(long id) {
         try (PreparedStatement statement = connection
                 .prepareStatement(DELETE_USER)) {
@@ -72,6 +76,7 @@ public class UserDaoJDBCImpl implements UserDao {
         }
     }
 
+    @Override
     public List<User> getAllUsers() {
         try (Statement statement = connection.createStatement()) {
             List<User> users = new ArrayList<>();
@@ -93,6 +98,7 @@ public class UserDaoJDBCImpl implements UserDao {
         }
     }
 
+    @Override
     public void cleanUsersTable() {
         try (PreparedStatement statement = connection
                 .prepareStatement(CLEAR_TABLE)) {
