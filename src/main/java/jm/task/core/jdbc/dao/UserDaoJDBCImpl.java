@@ -53,26 +53,56 @@ public class UserDaoJDBCImpl implements UserDao {
     public void saveUser(String name, String lastName, byte age) {
         try (PreparedStatement statement = connection
                 .prepareStatement(INSERT_NEW)) {
+            connection.setAutoCommit(false);
             statement.setString(1, name);
             statement.setString(2, lastName);
             statement.setByte(3, age);
             statement.executeUpdate();
-            System.out.printf("User с именем — %s добавлен в базу данных\n", name);
+            connection.commit();
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+                System.out.println("Выполнен rollback в saveUser");
+            } catch (SQLException ex) {
+                System.err.println("Ошибка при вызове rollback в saveUser: "
+                        + ex.getMessage());
+            }
             throw new RuntimeException("Ошибка при добавлении пользователя: "
                     + e.getMessage(), e);
+        } finally {
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException ex) {
+                System.err.println("Ошибка при возвращении auto-commit в saveUser: "
+                        + ex.getMessage());
+            }
         }
     }
 
     @Override
     public void removeUserById(long id) {
-        try (PreparedStatement statement = connection
-                .prepareStatement(DELETE_USER)) {
+        try (PreparedStatement statement = connection.prepareStatement(DELETE_USER)) {
+            connection.setAutoCommit(false);
             statement.setLong(1, id);
             statement.executeUpdate();
+            connection.commit();
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+                System.out.println("Выполнен rollback в removeUserById");
+            } catch (SQLException ex) {
+                System.err.println("Ошибка при вызове rollback в removeUserById: "
+                        + ex.getMessage());
+            }
             throw new RuntimeException("Ошибка при удалении пользователя: "
                     + e.getMessage(), e);
+        } finally {
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException ex) {
+                System.err.println("Ошибка при возвращении auto-commit в removeUserById: "
+                        + ex.getMessage());
+            }
         }
     }
 
@@ -90,7 +120,6 @@ public class UserDaoJDBCImpl implements UserDao {
                 user.setAge(resultSet.getByte(4));
                 users.add(user);
             }
-            users.forEach(System.out::println);
             return users;
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка при получении списка пользователей: "
@@ -100,12 +129,27 @@ public class UserDaoJDBCImpl implements UserDao {
 
     @Override
     public void cleanUsersTable() {
-        try (PreparedStatement statement = connection
-                .prepareStatement(CLEAR_TABLE)) {
+        try (PreparedStatement statement = connection.prepareStatement(CLEAR_TABLE)) {
+            connection.setAutoCommit(false);
             statement.executeUpdate();
+            connection.commit();
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+                System.out.println("Выполнен rollback в cleanUsersTable");
+            } catch (SQLException ex) {
+                System.err.println("Ошибка при вызове rollback в cleanUsersTable: "
+                        + ex.getMessage());
+            }
             throw new RuntimeException("Ошибка при очистке таблицы users: "
                     + e.getMessage(), e);
+        } finally {
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException ex) {
+                System.err.println("Ошибка при возвращении auto-commit в cleanUsersTable: "
+                        + ex.getMessage());
+            }
         }
     }
 }
